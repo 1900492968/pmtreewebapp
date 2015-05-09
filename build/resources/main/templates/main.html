@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>路网查询系统</title>
+	<link rel="stylesheet" type="text/css" href="../easyui/themes/default/easyui.css"></link>
+	<link rel="stylesheet" type="text/css" href="../easyui/themes/icon.css"></link>
+	<link rel="stylesheet" type="text/css" href="../easyui/demo.css"></link>
+	<script type="text/javascript" src="../easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="../easyui/jquery.easyui.min.js"></script>
+    <script>
+    function myAddTabs(mytitle, mycontent) {
+        //$('#newNetworkGraphWindow').window('open');
+        $('#mytabsid').tabs('add',{
+            title:mytitle,
+            content:mycontent,
+            closable:true
+        });
+    }
+    </script>
+</head>
+<body class="easyui-layout">
+	<div data-options="region:'north',border:false" style="height:40px;padding:0px;">
+        <div class="easyui-panel" style="padding:5px;">
+            <!--<a href="#" class="easyui-linkbutton" data-options="plain:true">Home</a>-->
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-new'">新建路网图</a>
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm2',iconCls:'icon-open'">打开路网图</a>
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm3',iconCls:'icon-edit'">修改路网图</a>
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm4',iconCls:'icon-delete'">删除路网图</a>
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm5',iconCls:'icon-help'">帮助</a>
+        </div>
+        <div  onclick="javascript:myAddTabs('new', 'aaaa')" id="mm1" style="">
+            <div data-options="iconCls:'icon-undo'">新建</div>
+        </div>
+        <div id="mm2" style="">
+            <div>华南师范大学路网图</div>
+            <div>天河区路网图</div>
+            <div>广州市路网图</div>
+        </div>
+        <div id="mm3" style="">
+            <div>华南师范大学路网图</div>
+            <div>天河区路网图</div>
+            <div>广州市路网图</div>
+        </div>
+        <div id="mm4" style="padding:10px;text-align:left">
+            <div>华南师范大学路网图</div>
+            <div>天河区路网图</div>
+            <div>广州市路网图</div>
+        </div>
+        <div id="mm5" class="menu-content" style="padding:10px;text-align:left">
+        </div>
+    </div>
+	<div data-options="region:'south',border:true" style="height:50px;padding:10px;"></div>
+	<div id="mytabsid" data-options="region:'center',border:false,title:''" class="easyui-tabs" style=";">    	
+		<div title="华南师范大学路网图" data-options="closable:true" >
+		</div>
+		<div title="天河区路网图" data-options="closable:true" ></div>
+		<div title="广州市路网图" data-options="closable:true" ></div>
+    </div>
+    
+	<div id="newNetworkGraphWindow" class="easyui-window" title="Modal Window" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;height:200px;padding:10px;">
+		The window content.
+	</div>
+</body>
+</html>

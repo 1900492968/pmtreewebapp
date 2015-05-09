@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"></meta>
+	<title>路网查询系统</title>
+	<link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css" th:href="@{/easyui/themes/default/easyui.css}"></link>
+	<link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css" th:href="@{/easyui/themes/icon.css}"></link>
+	<link rel="stylesheet" type="text/css" href="../static/easyui/demo/demo.css" th:href="@{/easyui/demo/demo.css}"></link>
+	<script type="text/javascript" src="../static/easyui/jquery.min.js" th:src="@{/easyui/jquery.min.js}"></script>
+	<script type="text/javascript" src="../static/easyui/jquery.easyui.min.js" th:src="@{/easyui/jquery.easyui.min.js}"></script>
+    <script>
+    function myAddTabs(mytitle, mycontent) {
+        $('#newNetworkGraphWindow').window('open');
+        // $('#mytabsid').tabs('add',{
+        //     title:mytitle,
+        //     content:mycontent,
+        //     closable:true
+        // });
+    }
+    function saveNetworkGraph() {
+    	$.messager.progress();
+        $('#networkgraphform').form({
+            url:"/rngraph/new/",
+            onSubmit: function(){
+                // do some check
+                // return false to prevent submit;
+                /*
+                if ($('#networkgraphform_name').value == None) {
+                    alert("不能为空！");
+                    return false;
+                }
+                */
+            },
+            success:function(data){
+                //var data = eval('(' + data + ')'); 
+                var data = $.parseJSON(data); 
+                if (data.failure){
+                    alert(data.message)
+                } else {
+                	var divHTML = '';
+                	$.each(data, function(n, value) {
+                		divHTML += '<div>'+value.name+"</div>";
+                	}); 
+                	var mm2divHTML = '<div id="mm2">'+divHTML+'</div>';
+                	alert(mm2divHTML);
+                	$("#mm2").remove();
+                	alert(2);
+                	var mm2NewElement = $(mm2divHTML)
+                	alert(3);
+                	$('#mm3').before(mm2NewElement);
+                	alert(3);
+					//mm2NewElement.insertBefore('#mm3');
+					//$('#mm3').insertBefore(mm2divHTML);
+					//$('#mm2').html(divHTML);
+					$('#mb2').menubutton({
+					    iconCls: 'icon-edit',
+					    menu: '#mm2'
+					});
+                	/*
+                	var divHTML = '<div style="height: 378px;" class="menu-line"></div>';
+                	$.each(data, function(n, value) {
+                		divHTML += '<div style="height: 20px;" class="menu-item" onclick="openNetworkGraph(this)">';
+                		divHTML += '<div style="height: 20px; line-height: 20px;" class="menu-text">'+value.name+"</div>";
+                		divHTML += '</div>';
+                	}); 
+                	var aaa = $.fn.menubutton.menu("aaaaaaa");
+                	alert(aaa.innerHTML);
+					var mm2 = document.getElementById("mm2");
+                	var mm2divHTML = '<div class="menu-top menu" id="mm2" style="width: 182px; height: 258px; overflow: auto;">'+divHTML+'</div>';
+					mm2.innerHTML = mm2divHTML;
+					
+					var mm3 = document.getElementById("mm3");
+                	var mm3divHTML = '<div id="mm3">'+divHTML+'</div>';
+					mm3.innerHTML = mm3divHTML;
+					
+					var mm4 = document.getElementById("mm4");
+                	var mm4divHTML = '<div id="mm4">'+divHTML+'</div>';
+					mm4.innerHTML = mm4divHTML;	
+					*/
+                }
+
+        		$.messager.progress('close');
+            }
+        });
+        // submit the form
+        $('#networkgraphform').submit();
+    }
+    
+    function openNetworkGraph(obj) {
+    	alert(obj.innerHTML);
+    }
+    </script>
+</head>
+<body class="easyui-layout">
+	<div data-options="region:'north',border:false" style="height:125px;padding:0px;">
+        <div class="easyui-panel" style="height:87px">
+            <style type="text/css">
+                .logo { float: left; width: 216px; height: 67px; background: url(contentlogo.png)  no-repeat; }
+                .sitename { float: left; margin: 17px 0 0 12px; background: url(logopipe.png) no-repeat 0 4px;  }
+                .sitename span { float: left; display: block; width: 152px; height: 50px; background: url(cssitename.png) no-repeat 12px 0; text-indent: -9999px; }
+            </style>
+            <a href="http://cs.scnu.edu.cn/" title="华南师范大学计算机学院"><div class="logo"></div></a>
+            <div class="sitename"><span>华南师范大学计算机学院</span></div>	
+            <div style="width: 70%; height: 67px;text-align:center;line-height:67px"><h2>PMTree演示程序</h2></div>
+            
+        </div>
+
+        <div class="easyui-panel" style="padding:5px;">
+            <!--<a href="#" class="easyui-linkbutton" data-options="plain:true">Home</a>-->
+            <a href="#" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-new'">新建路网图</a>
+            <a href="#" id="mb2" class="easyui-menubutton" data-options="menu:'#mm2',iconCls:'icon-open'">打开路网图</a>
+            <a href="#" id="mb3" class="easyui-menubutton" data-options="menu:'#mm3',iconCls:'icon-edit'">修改路网图</a>
+            <a href="#" id="mb4" class="easyui-menubutton" data-options="menu:'#mm4',iconCls:'icon-delete'">删除路网图</a>
+            <a href="#" id="mb5" class="easyui-menubutton" data-options="menu:'#mm5',iconCls:'icon-help'">帮助</a>
+        </div>
+        <div  onclick="javascript:myAddTabs('new', 'aaaa')" id="mm1" style="">
+            <div data-options="iconCls:'icon-undo'">新建</div>
+        </div>
+        <div id="mm2" style="padding:10px;text-align:left">
+            <div th:each="g:${graphs}" th:text="${g.name}" onclick="openNetworkGraph(this)"></div>
+        </div>
+        <div id="mm3" style="padding:10px;text-align:left">
+            <div th:each="g:${graphs}" th:text="${g.name}"></div>
+        </div>
+        <div id="mm4" style="padding:10px;text-align:left">
+            <div th:each="g:${graphs}" th:text="${g.name}"></div>
+        </div>
+        <div id="mm5" class="menu-content" style="padding:10px;text-align:left">
+        </div>
+    </div>
+	<div data-options="region:'south',border:true" style="height:50px;padding:10px;"></div>
+	<div id="mytabsid" data-options="region:'center',border:false,title:''" class="easyui-tabs" style=";">    	
+		<div title="华南师范大学路网图" data-options="closable:true" >
+		</div>
+    </div>
+    
+	<div id="newNetworkGraphWindow" class="easyui-window" title="创建路网图" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;height:290px;padding:10px;">
+        <div style="width:100%;height:160px;text-align:center;margin:10px">
+    		<form id="networkgraphform" action="/rngraph/new/" method="post">
+                <input type="hidden" name="id" value=""></input>
+                <div style="">
+                    <div style="width:100%;height:32px">网络图名称：<input id="networkgraphform_name" name="name" class="easyui-textbox" style="width:70%;height:32px"></input>
+                    </div>
+                    
+                </div>
+                <div style="">
+                    <div style="width:100%;height:32px">网络图描述：<input class="easyui-textbox" name="desc"  data-options="multiline:true" style="width:70%;height:100px"></input></div>
+                </div>
+            </form>
+        </div>
+
+        <div id="networkgraphform-buttons" style="text-align:center;">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveNetworkGraph()">保存</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#newNetworkGraphWindow').window('close')">取消</a>
+        </div>
+    </div>
+
+</body>
+</html>
