@@ -37,25 +37,30 @@
                 if (data.failure){
                     alert(data.message)
                 } else {
+                	/*
                 	var divHTML = '';
                 	$.each(data, function(n, value) {
                 		divHTML += '<div>'+value.name+"</div>";
                 	}); 
                 	var mm2divHTML = '<div id="mm2">'+divHTML+'</div>';
-                	alert(mm2divHTML);
-                	$("#mm2").remove();
-                	alert(2);
+                	alert("mm2 before");
+                   	$("#mm2").destroy();
+                	alert("mm2 destroyed");
                 	var mm2NewElement = $(mm2divHTML)
-                	alert(3);
+                	alert("mm2 created");
                 	$('#mm3').before(mm2NewElement);
-                	alert(3);
+                	alert("mm2 inserted before mm3");
 					//mm2NewElement.insertBefore('#mm3');
 					//$('#mm3').insertBefore(mm2divHTML);
 					//$('#mm2').html(divHTML);
-					$('#mb2').menubutton({
-					    iconCls: 'icon-edit',
-					    menu: '#mm2'
+					$('#mm2').menu({
+					    onClick:function(item){
+					        //...
+					    }
 					});
+                	alert("mm2 transformed as a menu");
+                	*/
+                	
                 	/*
                 	var divHTML = '<div style="height: 378px;" class="menu-line"></div>';
                 	$.each(data, function(n, value) {
