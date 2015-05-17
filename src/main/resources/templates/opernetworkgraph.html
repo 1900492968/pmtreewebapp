@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<!--[if lte IE 6 ]> <html class="ie ie6 lte_ie7 lte_ie8" lang="zh-CN"> <![endif]-->
+<!--[if IE 7 ]> <html class="ie ie7 lte_ie7 lte_ie8" lang="zh-CN"> <![endif]-->
+<!--[if IE 8 ]> <html class="ie ie8 lte_ie8" lang="zh-CN"> <![endif]-->
+<!--[if IE 9 ]> <html class="ie ie9" lang="zh-CN"> <![endif]-->
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="renderer" content="webkit" />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title></title>
+    <link rel="shortcut icon" href="http://statics.scnu.edu.cn/statics/images/favicon.ico" />
+
+    <!-- Bootstrap -->
+    <link href="../static/bootstrap-3.3.4-dist/css/bootstrap.min.css"  th:href="@{/bootstrap-3.3.4-dist/css/bootstrap.min.css}" rel="stylesheet"/>
+	
+	<link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css" th:href="@{/easyui/themes/default/easyui.css}"></link>
+	<link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css" th:href="@{/easyui/themes/icon.css}"></link>
+	<link rel="stylesheet" type="text/css" href="../static/easyui/demo/demo.css" th:href="@{/easyui/demo/demo.css}"></link>
+	
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script type="text/javascript" src="../static/easyui/jquery.min.js" th:src="@{/easyui/jquery.min.js}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../static/bootstrap-3.3.4-dist/js/bootstrap.min.js" th:src="@{/bootstrap-3.3.4-dist/js/bootstrap.min.js}"></script>
+	<!-- jQuery easyui -->
+	<script type="text/javascript" src="../static/easyui/jquery.easyui.min.js" th:src="@{/easyui/jquery.easyui.min.js}"></script>
+	
+	<script>
+	function oncomplete() {
+		alert("aaaaaaaaaaa");
+		var vosJson = ${"#voJson"}.val();
+		alert(vosJson)
+		vo = jQuery.parseJSON(vosJson)
+		alert(vo)
+		$('#networkroad_dg').datagrid({
+			data: vo
+		});
+	}
+	</script>
+  </head>
+  <body>
+  <!--     <div id="networkgraphaccordion" class="easyui-accordion" data-options="fit:true, border:false,multiple:true">
+	    <div title="路网信息操作" data-options="iconCls:'icon-edit'" style="padding:0px;">
+			<div id="newNetworkRoadWindow" class="" title="创建路网图的路网" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:100%;height:290px;padding:10px;">
+		        <div style="width:100%;text-align:center;margin:10px">
+		    		<form id="networkroadform" action="/rngraph/new/" method="post">
+		                <input type="hidden" name="id" value=""></input>
+		                    <div style="width:100%;height:32px">
+						 		 路网名称：<input id="networkroadform_name" name="name" class="easyui-textbox" style="width:100px;height:32px"></input>
+						 		路网描述：<input class="easyui-textbox" name="desc" style="width:50%;height:32px"></input>
+		            			<a href="#"  class="easyui-linkbutton" iconCls="icon-ok" style="width:100px;height:32px" onclick="newNetworkRoadWindow()">保存</a>
+		                    </div>
+		            </form>
+		        </div>
+		    </div>
+	    </div>
+	    <div title="路网简图" data-options="iconCls:'icon-reload'" style="padding:10px;">
+	        content2
+	    </div>
+	    <div title="轨迹查询" data-options="iconCls:'icon-reload',selected:true" >
+	        content3
+	    </div>
+	</div>
+	 -->    
+	 <div id="p" class="easyui-panel" title="路网图基础信息" th:title="${graphId}" style="width:100%;;padding:10px;">
+ 		路网图名称：<input id="networkroadform_name" name="name" th:value="${graph.name}" editable="false" readonly="true" class="easyui-textbox" style="width:30%;height:32px"></input>
+		路网图描述：<input class="easyui-textbox" name="desc"  th:value="${graph.desc}" editable="false" readonly="true" style="width:55%;height:32px"></input>		            			
+    </div>
+	    <table id="networkroad_dg" class="easyui-datagrid" title="路网链路信息" style="width:100%;height:320px;padding: 10px;"
+	          data-options="singleSelect:true, remoteSort:false,rownumbers:true,fitColumns:true,url:'/rngraph/测试图/viewroadnetwork'" >
+	      <thead>
+	          <tr>	              
+	              <th data-options="field:'id',sortable:true,align:'right', " style="width:200px" >路网标识</th>
+	              <th data-options="field:'pointsStr',sortable:true,align:'right', " style="width:200px">路网点集合</th>
+	          </tr>
+	      </thead>
+	    </table>	
+	    <intput id="vosJson" type="hidden" th:value="${vosJson}" th:attr="value=#{${vosJson}}"/>
+  </body>
+</html>

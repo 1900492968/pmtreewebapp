@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<!--[if lte IE 6 ]> <html class="ie ie6 lte_ie7 lte_ie8" lang="zh-CN"> <![endif]-->
+<!--[if IE 7 ]> <html class="ie ie7 lte_ie7 lte_ie8" lang="zh-CN"> <![endif]-->
+<!--[if IE 8 ]> <html class="ie ie8 lte_ie8" lang="zh-CN"> <![endif]-->
+<!--[if IE 9 ]> <html class="ie ie9" lang="zh-CN"> <![endif]-->
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="renderer" content="webkit" />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title></title>
+    <link rel="shortcut icon" href="http://statics.scnu.edu.cn/statics/images/favicon.ico" />
+    <!-- Bootstrap -->
+    <link href="../static/bootstrap-3.3.4-dist/css/bootstrap.min.css"  th:href="@{/bootstrap-3.3.4-dist/css/bootstrap.min.css}" rel="stylesheet"/>
+
+	<link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css" th:href="@{/easyui/themes/default/easyui.css}"></link>
+	<link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css" th:href="@{/easyui/themes/icon.css}"></link>
+	<link rel="stylesheet" type="text/css" href="../static/easyui/demo/demo.css" th:href="@{/easyui/demo/demo.css}"></link>
+	
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script type="text/javascript" src="../static/easyui/jquery.min.js" th:src="@{/easyui/jquery.min.js}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Bootstrap -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="../static/bootstrap-3.3.4-dist/js/bootstrap.min.js" th:src="@{/bootstrap-3.3.4-dist/js/bootstrap.min.js}"></script>
+	<!-- jQuery easyui -->
+	<script type="text/javascript" src="../static/easyui/jquery.easyui.min.js" th:src="@{/easyui/jquery.easyui.min.js}"></script>
+	
+	<link rel="stylesheet" type="text/css" href="../static/jsxgraph/jsxgraph.css" th:href="@{/jsxgraph/jsxgraph.css}"></link>
+	<script type="text/javascript" src="../static/jsxgraph/jsxgraphcore.js" th:src="@{/jsxgraph/jsxgraphcore.js}"></script>
+	<script type="text/javascript">
+		function createRect(box, left, top, right, bottom) {
+			var color = 'blue';
+			var size = 0;
+			var p1 = box.create('point', [left,top], {color:color, size:size, name:""}),
+			    p2 = box.create('point', [right,bottom], {color:color, size:size, name:""}),
+			    p3 = box.create('point', [function(){return p1.X()},function(){return p2.Y()}], {color:color, size:size, name:""}),
+			    p4 = box.create('point', [function(){return p2.X()},function(){return p1.Y()}], {color:color, size:size, name:""}),
+			    rect = box.create('polygon',[p1,p3,p2,p4],{hasInnerPoints:true});
+				p1.isDraggable = false;
+				p2.isDraggable = false;
+				rect.isDraggable = true;
+		}
+
+	</script>
+  </head>
+  <body>
+  	<div class="easy-panel">
+    <div id="box1" class="box1" style='width:1096px; height:500px;'></div>
+    </div>
+    <div id="box2" class="box2" style='width:500px; height:300px;'></div>
+	<script type="text/javascript">
+		var box = JXG.JSXGraph.initBoard('box1', {boundingbox: [0, 0, 100, 100], grid:true,showCopyright:false});
+
+			createRect(box, 10, 10, 100, 100);
+			createRect(box, 50, 50, 55, 55);
+			createRect(box, 5, 5, 20, 20);
+	</script>
+  </body>
+
+
+</html>

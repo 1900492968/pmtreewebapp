@@ -1,6 +1,4 @@
 package pmtree;
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,11 +7,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+import cn.edu.scnu.pmtreewebapp.model.PMTree;
+import cn.edu.scnu.pmtreewebapp.model.RoadNetwork;
+
 import com.MBR;
 import com.PointData;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import create_data.CreateData;
 import create_data.Write_Read;
@@ -31,6 +29,7 @@ public class PM_tree {
     
     static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");	//定义时间格式，到毫秒级
     
+    static int index = 0;
 	public static void main(String[] args) {
 	
 		while(true)
@@ -85,6 +84,13 @@ public class PM_tree {
 				
 				startTime=System.currentTimeMillis();
 				pm_tree = generateLop(MBR_data_pointer,MBR_data.length);
+				
+				PMTree pm = new PMTree(pm_tree);
+				RoadNetwork.savePMTree("roadnetwork_"+index+++"", pm_tree);
+				
+				
+				
+				
 				endTime=System.currentTimeMillis();
 				totalTime=endTime-startTime;
 				System.out.println("建立: totalTime="+totalTime+"ms");

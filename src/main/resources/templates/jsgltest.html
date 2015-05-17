@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:vml="urn:schemas-microsoft-com:vml">
+  <head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>JSGL empty page template</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+    <!--[if vml]><style>vml\:* {behavior: url(#default#VML);}</style><![endif]-->
+    <script type="text/javascript" src="../static/js/jsgl.js" th:src="@{/js/jsgl.js}"></script>
+  </head>
+  <body>
+    <div id="panel" style="width: 800px; height: 600px"></div>
+    <script type="text/javascript">
+      function createRect(myPanel, left, top, right, bottom) {
+        /* Create polygon and modify it */
+        polygon = myPanel.createPolygon();
+        polygon.addPointXY(left,top);
+        polygon.addPointXY(right,top);
+        polygon.addPointXY(right,bottom);
+        polygon.addPointXY(left,bottom);
+
+        //polygon.getStroke().setWeight(5);
+        polygon.getStroke().setColor("rgb(0,0,255)");
+        polygon.getFill().setColor("rgb(0,255,0)");
+        polygon.getFill().setOpacity(1);
+        myPanel.addElement(polygon);
+      }
+
+      /* Instantiate JSGL Panel. */
+      myPanel = new jsgl.Panel(document.getElementById("panel"));
+        createRect(myPanel, 10, 10, 10+600, 10+600);
+      for(i = 0; i < 2500; i++) {
+        createRect(myPanel, i, i, i+20, i+20);
+      }
+      /* Start drawing! */
+ 
+      //Create circle and modify it
+      /*
+      circle = myPanel.createCircle();
+      circle.setCenterLocationXY(50,50);
+      circle.setRadius(30);
+      circle.getStroke().setWeight(5);
+      circle.getStroke().setColor("rgb(255,0,0)");
+      myPanel.addElement(circle);
+      */
+      /*
+      //Create text label and modify it
+      label = myPanel.createLabel();
+      label.setText("Hello World!");
+      label.setLocationXY(30,120);
+      label.setBold(true);
+      label.setFontFamily("sans-serif");
+      label.setFontSize(24);
+      myPanel.addElement(label);
+      */
+
+    </script>
+  </body>
+</html>

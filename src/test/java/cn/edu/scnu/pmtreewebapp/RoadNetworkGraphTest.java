@@ -16,7 +16,7 @@ public class RoadNetworkGraphTest {
 	public void setUp() {
 
 		RoadNetwork r1 = new RoadNetwork();
-		r1.setDesc("desc");
+//		r1.setDesc("desc");
 		r1.setId("id");
 		r1.setName("name");
 		List<NetworkPoint> jointPoints = new ArrayList<NetworkPoint>();

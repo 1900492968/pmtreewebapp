@@ -19,7 +19,7 @@ public class RoadNetworkGraph {
 	private String desc;
 	private List<RoadNetwork> roadNetworks = new ArrayList<RoadNetwork>();
 	
-	private RoadNetworkGraph(String id, String name, String desc) {
+	public RoadNetworkGraph(String id, String name, String desc) {
 		super();
 		this.id = id;
 		this.name = name;

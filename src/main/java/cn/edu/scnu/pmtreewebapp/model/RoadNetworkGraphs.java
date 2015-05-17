@@ -40,6 +40,9 @@ public final class RoadNetworkGraphs {
 	
 	public static final RoadNetworkGraph newRoadNetworkGraph(String id,
 			String name, String desc) throws IOException {
+		if ("".equals(name)) {
+			throw new RuntimeException("网络图名称不能玩为空!");
+		}
 		if (graphsInstance.hasGraph(id)) {
 			throw new RuntimeException("id:" + id + ", 网络图已经存在，不能创建!");
 		}
@@ -50,6 +53,40 @@ public final class RoadNetworkGraphs {
 		return graph;
 	}
 
+	public static final RoadNetworkGraph saveRoadNetworkGraphs(RoadNetworkGraph graph) {
+		if ("".equals(graph.getName())) {
+			throw new RuntimeException("网络图名称不能玩为空!");
+		}
+		if (graphsInstance.hasGraph(graph.getId())) {
+			throw new RuntimeException("id:" + graph.getId() + ", 网络图已经存在，不能创建!");
+		}
+		graphsInstance.graphs.add(graph);
+		try {
+			saveRoadNetworkGraphs();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("网络图创建失败!");
+		}
+		return graph;
+	}
+	
+	public static final RoadNetworkGraph updateRoadNetworkGraphs(RoadNetworkGraph graph) {
+		if ("".equals(graph.getName())) {
+			throw new RuntimeException("网络图名称不能玩为空!");
+		}
+		if (!graphsInstance.hasGraph(graph.getId())) {
+			throw new RuntimeException("id:" + graph.getId() + ", 网络图不存在，不能修改!");
+		}
+
+		try {
+			saveRoadNetworkGraphs();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException("网络图修改失败!");
+		}
+		return graph;
+	}
+	
 	public static final void removeRoadNetworkGraph(String id) throws IOException {
 		for(RoadNetworkGraph graph : graphsInstance.graphs) {
 			if (graph.getId().endsWith(id)) {
@@ -84,6 +121,15 @@ public final class RoadNetworkGraphs {
 		}
 		return null;
 	}
+
+	public static final RoadNetworkGraph findRoadNetworkGraphByName(String name) {
+		for(RoadNetworkGraph graph : graphsInstance.graphs) {
+			if (graph.getId().equals(name)) {
+				return graph;
+			}
+		}
+		return null;
+	}
 	
 	public static final void saveRoadNetworkGraphs() throws IOException {
 		ObjectMapper mapper = new XmlMapper();    
@@ -112,6 +158,8 @@ public final class RoadNetworkGraphs {
 				e.printStackTrace();
 				new RuntimeException("路网图配置文件读取保存失败。");
 			}
+		} else if (graphsInstance.graphs == null) {
+			graphsInstance.graphs = new ArrayList<RoadNetworkGraph>();
 		}
 	}
 	
@@ -136,6 +184,15 @@ public final class RoadNetworkGraphs {
 			file.createNewFile();
 		}
 		return file;
+	}
+
+	public static final boolean hasGraphName(String name) {
+		for (RoadNetworkGraph g : graphsInstance.graphs) {
+			if (g.getName().equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public static final boolean hasGraph(String id) {

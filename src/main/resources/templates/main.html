@@ -8,144 +8,428 @@
 	<link rel="stylesheet" type="text/css" href="../static/easyui/demo/demo.css" th:href="@{/easyui/demo/demo.css}"></link>
 	<script type="text/javascript" src="../static/easyui/jquery.min.js" th:src="@{/easyui/jquery.min.js}"></script>
 	<script type="text/javascript" src="../static/easyui/jquery.easyui.min.js" th:src="@{/easyui/jquery.easyui.min.js}"></script>
+	<script type="text/javascript" src="../static/js/jquery.form.min.js" th:src="@{/js/jquery.form.min.js}"></script>
+	
+	<link rel="stylesheet" type="text/css" href="../static/jsxgraph/jsxgraph.css" th:href="@{/jsxgraph/jsxgraph.css}"></link>
+	<script type="text/javascript" src="../static/jsxgraph/jsxgraphcore.js" th:src="@{/jsxgraph/jsxgraphcore.js}"></script>
+    <script type="text/javascript" src="../static/js/jsgl.js" th:src="@{/js/jsgl.js}"></script>
+	
     <script>
-    function myAddTabs(mytitle, mycontent) {
-        $('#newNetworkGraphWindow').window('open');
-        // $('#mytabsid').tabs('add',{
-        //     title:mytitle,
-        //     content:mycontent,
-        //     closable:true
-        // });
-    }
-    function saveNetworkGraph() {
-    	$.messager.progress();
-        $('#networkgraphform').form({
-            url:"/rngraph/new/",
-            onSubmit: function(){
-                // do some check
-                // return false to prevent submit;
-                /*
-                if ($('#networkgraphform_name').value == None) {
-                    alert("不能为空！");
-                    return false;
-                }
-                */
-            },
-            success:function(data){
-                //var data = eval('(' + data + ')'); 
-                var data = $.parseJSON(data); 
-                if (data.failure){
-                    alert(data.message)
-                } else {
-                	var divHTML = '';
-                	$.each(data, function(n, value) {
-                		divHTML += '<div>'+value.name+"</div>";
-                	}); 
-                	var mm2divHTML = '<div id="mm2">'+divHTML+'</div>';
-                	alert(mm2divHTML);
-                	$("#mm2").remove();
-                	alert(2);
-                	var mm2NewElement = $(mm2divHTML)
-                	alert(3);
-                	$('#mm3').before(mm2NewElement);
-                	alert(3);
-					//mm2NewElement.insertBefore('#mm3');
-					//$('#mm3').insertBefore(mm2divHTML);
-					//$('#mm2').html(divHTML);
-					$('#mb2').menubutton({
-					    iconCls: 'icon-edit',
-					    menu: '#mm2'
-					});
-                	/*
-                	var divHTML = '<div style="height: 378px;" class="menu-line"></div>';
-                	$.each(data, function(n, value) {
-                		divHTML += '<div style="height: 20px;" class="menu-item" onclick="openNetworkGraph(this)">';
-                		divHTML += '<div style="height: 20px; line-height: 20px;" class="menu-text">'+value.name+"</div>";
-                		divHTML += '</div>';
-                	}); 
-                	var aaa = $.fn.menubutton.menu("aaaaaaa");
-                	alert(aaa.innerHTML);
-					var mm2 = document.getElementById("mm2");
-                	var mm2divHTML = '<div class="menu-top menu" id="mm2" style="width: 182px; height: 258px; overflow: auto;">'+divHTML+'</div>';
-					mm2.innerHTML = mm2divHTML;
-					
-					var mm3 = document.getElementById("mm3");
-                	var mm3divHTML = '<div id="mm3">'+divHTML+'</div>';
-					mm3.innerHTML = mm3divHTML;
-					
-					var mm4 = document.getElementById("mm4");
-                	var mm4divHTML = '<div id="mm4">'+divHTML+'</div>';
-					mm4.innerHTML = mm4divHTML;	
-					*/
-                }
 
-        		$.messager.progress('close');
-            }
-        });
-        // submit the form
-        $('#networkgraphform').submit();
+    function createJSGLRect(myPanel, left, top, right, bottom, color) {
+      /* Create polygon and modify it */
+      polygon = myPanel.createPolygon();
+      polygon.addPointXY(left,top);
+      polygon.addPointXY(right,top);
+      polygon.addPointXY(right,bottom);
+      polygon.addPointXY(left,bottom);
+
+      polygon.getStroke().setWeight(1);
+
+      polygon.getStroke().setColor(color);
+      polygon.getFill().setColor(color);
+      //polygon.getStroke().setColor("rgb(0,0,255)");
+      //polygon.getFill().setColor("rgb(0,255,0)");
+      polygon.getFill().setOpacity(0.2);
+      myPanel.addElement(polygon);
+    }
+    function createJSGLBox(data) {
+		var h = $("#mytabsid").height();
+		var w = $("#mytabsid").width();
+		var hh = $("#sitepanelId").height();
+		
+    	$("#box").css("width", w);
+    	$("#box").css("height",h+hh+100);
+    	$("#box").css("text-align", "center");
+    	$("#box").css("vertical-align", "align:middle");
+	  	var i = 0;
+	  	var lengthaaa = data.rows.length;
+		alert(lengthaaa);
+		
+  		var datambr = data.smbr;
+  		
+  		box = new jsgl.Panel(document.getElementById("box"));
+
+	  	while(true) {
+	  		if(i>=lengthaaa)
+	  			break;
+	  		var dataobj = data.rows[i];
+	  		createJSGLRect(box, dataobj.d1, dataobj.t1, dataobj.d2, dataobj.t2,"blue");
+	  		i++;
+	  	}
+	  	createJSGLRect(box, datambr.d1, datambr.t1, datambr.d2, datambr.t2,"red");
+		$('#win2').on("onClose", function() {box.clear()})
     }
     
-    function openNetworkGraph(obj) {
-    	alert(obj.innerHTML);
+	function createRect(box, left, top, right, bottom,polygonfillcolor) {
+		var pointcolor = 'transparent';
+		var size = 0;
+		var p1 = box.create('point', [left,top], {color:pointcolor, size:size, name:""}),
+		    p2 = box.create('point', [right,bottom], {color:pointcolor, size:size, name:""}),
+		    p3 = box.create('point', [function(){return p1.X()},function(){return p2.Y()}], {color:pointcolor, size:size, name:""}),
+		    p4 = box.create('point', [function(){return p2.X()},function(){return p1.Y()}], {color:pointcolor, size:size, name:""}),
+		    rect = box.create('polygon',[p1,p3,p2,p4],{hasInnerPoints:true,name:"哈哈哈",color:polygonfillcolor});
+			p1.isDraggable = false;
+			p2.isDraggable = false;
+			rect.isDraggable = false;
+	}
+	
+	function createBox(data) {
+		var h = $("#mytabsid").height();
+		var w = $("#mytabsid").width();
+		var hh = $("#sitepanelId").height();
+		
+    	$("#box").css("width", w-10);
+    	$("#box").css("height",h+hh-10);
+    	$("#box").css("text-align", "center");
+    	$("#box").css("vertical-align", "align:middle");
+    	boundingbox = [-10, -10, 90, 90]
+		var box = JXG.JSXGraph.initBoard('box', 
+				{boundingbox: boundingbox, grid:true,//axis:true,
+					showCopyright:false,zoomX:1,zoomY:1, zoomFactor:0.9});
+
+	  	var i = 0;
+	  	var lengthaaa = data.rows.length;
+
+  		var datambr = data.smbr;
+	  	while(true) {
+	  		if(i>=lengthaaa)
+	  			break;
+	  		var dataobj = data.rows[i];
+			createRect(box, dataobj.d1, dataobj.t1, dataobj.d2, dataobj.t2,"blue");
+	  		i++;
+	  	}
+		createRect(box, datambr.d1, datambr.t1, datambr.d2, datambr.t2,"red");
+		$('#win2').on("onClose", function() {})
+		
+	}
+	
+    function queryResultGraphicView(dataJson) {
+	  	//alert(dataJson)
+  	  	var data = jQuery.parseJSON(dataJson);
+	  			
+    	//createBox(data);
+    	createJSGLBox(data);
+		
+		$('#win2').window({
+		    width: 640,
+		    height: 480,
+		    minimizable:false,
+		    maximizable:true,
+		    maximized:true,
+		});
+		$('#win2').window("open");
     }
+    
+    function myAddTabs(mytitle, mycontent) {
+        $('#newNetworkGraphWindow').window('open');
+    }
+
+
+    function saveNetworkGraph() {
+	    $('#networkgraphform').ajaxSubmit({
+        	type:'post',
+            url:"/rngraph/new/",
+            cache:false,
+            dataType:'json',
+            beforeSubmit: function() {
+	        	var newngname = $('#networkgraphform_name').textbox('getText');
+	        	if(newngname == "") {
+	            	$.messager.alert("警告","网络图名称不能为空！")
+	            	return false;
+	        	}
+	        	return true;
+            },
+            success: function(data) {
+	            if (!data.success){
+	                $.messager.alert("新建操作失败","新建操作失败！"+data.message)
+	            } else {
+	            	$.messager.alert("新建操作成功","新建操作成功！")
+	            	var newngname = $('#networkgraphform_name').textbox('getText');
+	            	$('#mm2').menu('appendItem', {
+	            		text: newngname,
+	            	});
+	            	$('#mm3').menu('appendItem', {
+	            		text: newngname,
+	            	});
+	            	$('#mm4').menu('appendItem', {
+	            		text: newngname,
+	            	});
+	            	$('#mm5').menu('appendItem', {
+	            		text: newngname,
+	            	});
+	            }
+            } ,
+            error:function(xhr, textStatus, errorThrown){
+            	$.messager.alert("新建操作失败","新建操作失败！"+textStatus+errorThrown);
+            }
+        });
+	}
+    
+    function openNetworkGraphForEdit(item) {    	
+		var itemtext = item.text;
+		$('#networkroadform_name').textbox("setText", "");
+		$('#networkroadform_desc').textbox("setText", "");
+        $('#newNetworkRoadWindow').window('open');
+		$('#networkroadform_id').val(itemtext);
+
+	    $('#networkroadform').ajaxSubmit({
+        	type:'post',
+            url:"/rngraph/"+itemtext+"/edit",
+            cache:false,
+            dataType:'json',
+            success: function(data) {
+	            if (!data.success){
+	                $.messager.alert("操作失败","操作失败！"+data.message);
+	            } else {
+	        		$('#networkroadform_id').val(data.id);
+
+	        		$('#networkroadform_name').textbox("setText", data.name);
+	        		$('#networkroadform_desc').textbox("setText", data.desc);
+	            }
+            } ,
+            error:function(xhr, textStatus, errorThrown){
+            	$.messager.alert("操作失败","操作失败！"+textStatus+errorThrown);
+            }
+        });
+    }
+
+    function updateNetworkGraphBasicInfo() {
+    	var ngid = $('#networkroadform_id').val();
+    	var newngname = $('#networkroadform_name').textbox('getText');
+    	var ngdesc = $('#networkroadform_desc').textbox('getText');
+    	
+	    $('#networkroadform').ajaxSubmit({
+        	type:'post',
+            url:"/rngraph/upateinfo",
+            cache:false,
+            dataType:'json',
+            data:{
+            	id:ngid,
+            	name:newngname,
+            	desc:ngdesc
+            },
+            beforeSubmit: function() {
+	        	if(newngname == "") {
+	            	$.messager.alert("警告","网络图名称不能为空！")
+	            	return false;
+	        	}
+	        	return true;
+            },
+            success: function(data) {
+	            if (!data.success){
+	                $.messager.alert("修改操作失败","修改操作失败！"+data.message);
+	            } else {
+	            	$.messager.alert("修改操作成功","修改操作成功！")
+	            	$('#networkroadform_id').val(data.name);
+
+	            	var item2 = $('#mm2').menu('findItem', ngid);
+	            	var item3 = $('#mm3').menu('findItem', ngid);
+	            	var item4 = $('#mm4').menu('findItem', ngid);
+	            	var item5 = $('#mm5').menu('findItem', ngid);
+	            		            	
+	            	$('#mm2').menu('setText', {
+	            		target: item2.target,
+	            		text: data.name
+	            	});
+	            	$('#mm3').menu('setText', {
+	            		target: item3.target,
+	            		text: data.name
+	            	});
+	            	$('#mm4').menu('setText', {
+	            		target: item4.target,
+	            		text: data.name
+	            	});
+	            	$('#mm5').menu('setText', {
+	            		target: item5.target,
+	            		text: data.name
+	            	});
+	            	
+	            }
+            } ,
+            error:function(xhr, textStatus, errorThrown){
+            	$.messager.alert("修改操作失败","修改操作失败！"+textStatus+errorThrown);
+            }
+        });
+	}
+    
+    function getViewNetworkGraphTabName(title) {
+    	return title+": 查看"
+    }
+    function viewNetworkGraph(item) {
+		var itemtext = item.text;
+    	var mytitle = itemtext;
+    	var urlstr = '/rngraph/'+itemtext+'/view';
+    	var mycontent = '<iframe src="' +urlstr+ '" style="width:100%;height:100%;border:0px;" ><div>加载中...</div></iframe>';
+    	mytitle = getViewNetworkGraphTabName(mytitle);
+    	var titleTab = $('#mytabsid').tabs('getTab', mytitle);
+    	if (titleTab != null) {
+        	$('#mytabsid').tabs('select', mytitle);
+    	} else {
+            $('#mytabsid').tabs('add',{            	
+                title:mytitle,
+                body:mycontent,
+                closable:true
+            });
+    	}
+    	var titleTab = $('#mytabsid').tabs('getTab', mytitle);
+		$('#mytabsid').tabs('update',{
+			tab: titleTab,
+			options: {
+                content: mycontent,
+			},
+			type: 'all'
+    	});
+    }
+    
+    function removeNetworkGraph(item) {
+		var itemtext = item.text;
+
+    	$.messager.confirm('删除路网图','确定是否偶要删除路网图:'+itemtext+'?这将会把此路网图的路网和此路网的对象轨迹一起删除！',function(r){
+    		 if (r){
+   			    $.ajax({
+   			        url: "/rngraph/"+itemtext+"/remove",
+   			        type: "POST",
+   			        dataType : "json",
+   			        success: function( json ) {
+   			         	$.messager.alert("成功删除网络图","成功删除网络图："+itemtext+"!");
+   			         	var item2 = $('#mm2').menu('findItem', itemtext);
+   			         	var item3 = $('#mm3').menu('findItem', itemtext);
+   			         	var item4 = $('#mm4').menu('findItem', itemtext);
+   			         	var item5 = $('#mm5').menu('findItem', itemtext);
+			            $('#mm2').menu('removeItem',item2.target);
+			            $('#mm3').menu('removeItem',item3.target);
+			            $('#mm4').menu('removeItem',item4.target);
+			            $('#mm5').menu('removeItem',item5.target);
+			            
+			        	var titleTab = $('#mytabsid').tabs('close', itemtext);
+   			        },
+   			        error: function( xhr, status, errorThrown ) {
+   			         	$.messager.alert( "删除操作失败", "删除操作失败！" );
+   			            console.log( "Error: " + errorThrown );
+   			            console.log( "Status: " + status );
+   			            console.dir( xhr );
+   			        }    			     
+   			    });
+    		 }
+    	});
+    }
+    
+    function queryNetworkGraph(item) {
+		var itemtext = item.text;
+    	var mytitle = itemtext;
+    	var urlstr = '/rngraph/'+itemtext+'/query';
+    	var mycontent = '<iframe scrolling="no" src="' +urlstr+ '" style="width:100%;height:100%;border:0px;margin:0px;padding:0px;scrolling:&#34;no&#34;"><div>加载中...</div></iframe>';
+    	//var mycontent = '<iframe src="' +urlstr+ '" style="width:100%;height:100%;border:0px;margin:0px;padding:0px;"><div>加载中...</div></iframe>';
+
+    	mytitle = getTrajectoryQueryTabName(mytitle);
+    	var titleTab = $('#mytabsid').tabs('getTab', mytitle);
+    	if (titleTab != null) {
+        	$('#mytabsid').tabs('select', mytitle);
+    	} else {
+            $('#mytabsid').tabs('add',{
+                title:mytitle,
+                body:mycontent,
+                closable:true,
+                onClose:function() {alert("aaaaa")}
+            });
+    	}
+    	var titleTab = $('#mytabsid').tabs('getTab', mytitle);
+		$('#mytabsid').tabs('update',{
+			tab: titleTab,
+			options: {
+                content: mycontent,
+			},
+			type: 'all'
+    	});
+    	
+    }
+    function getTrajectoryQueryTabName(title) {
+    	return title+": 轨迹查询"
+    }
+    
     </script>
 </head>
-<body class="easyui-layout">
-	<div data-options="region:'north',border:false" style="height:125px;padding:0px;">
-        <div class="easyui-panel" style="height:87px">
+<body id="htmlbodyId" class="easyui-layout">
+	<div id="northpanelId" data-options="region:'north',border:false" style="height:125px;padding:0px;">
+        <div id="sitepanelId" class="easyui-panel" style="height:87px;">
             <style type="text/css">
                 .logo { float: left; width: 216px; height: 67px; background: url(contentlogo.png)  no-repeat; }
                 .sitename { float: left; margin: 17px 0 0 12px; background: url(logopipe.png) no-repeat 0 4px;  }
                 .sitename span { float: left; display: block; width: 152px; height: 50px; background: url(cssitename.png) no-repeat 12px 0; text-indent: -9999px; }
+                .scholatsitename { float: left; margin: 17px 0 0 12px; background: url(logopipe.png) no-repeat 0 4px;  }
+                .scholatsitename span { float: left; display: block; width: 152px; height: 50px; background: url(scholat_logo_beta.png) no-repeat 12px 0; text-indent: -9999px; }
             </style>
-            <a href="http://cs.scnu.edu.cn/" title="华南师范大学计算机学院"><div class="logo"></div></a>
-            <div class="sitename"><span>华南师范大学计算机学院</span></div>	
+            <a href="http://www.scnu.edu.cn/" target="#" title="华南师范大学"><div class="logo"></div></a>
+            <a href="http://cs.scnu.edu.cn/" target="#" title="华南师范大学计算机学院">
+            	<div class="sitename"><span>华南师范大学计算机学院</span></div>	
+            </a>
+			<div id="divlogo" style="padding-top:10px;float:left; margin-left: 10px;">
+				<a href="http://www.scholat.com/" target="#" ><img src="http://www.scholat.com/images/homepage/portal/logo_beta.png" th:src='@{/scholat_logo_beta.png}'/></a>
+			</div>
+			<!-- 
+				<a href="http://www.scholat.com/" target="#" title="学者网"><div class="scholatsitename"></div><img src="http://www.scholat.com/images/homepage/portal/logo_beta.png"/></a>
+             -->
             <div style="width: 70%; height: 67px;text-align:center;line-height:67px"><h2>PMTree演示程序</h2></div>
             
         </div>
 
-        <div class="easyui-panel" style="padding:5px;">
+        <div class="easyui-panel" data-options="border:true" style="padding:5px;">
             <!--<a href="#" class="easyui-linkbutton" data-options="plain:true">Home</a>-->
             <a href="#" class="easyui-menubutton" data-options="menu:'#mm1',iconCls:'icon-new'">新建路网图</a>
-            <a href="#" id="mb2" class="easyui-menubutton" data-options="menu:'#mm2',iconCls:'icon-open'">打开路网图</a>
-            <a href="#" id="mb3" class="easyui-menubutton" data-options="menu:'#mm3',iconCls:'icon-edit'">修改路网图</a>
+            <a href="#" id="mb2" class="easyui-menubutton" data-options="menu:'#mm2',iconCls:'icon-open'">查看路网图</a>
+            <a href="#" id="mb3" class="easyui-menubutton" data-options="menu:'#mm3',iconCls:'icon-edit'">修改路网图基础信息</a>
             <a href="#" id="mb4" class="easyui-menubutton" data-options="menu:'#mm4',iconCls:'icon-delete'">删除路网图</a>
-            <a href="#" id="mb5" class="easyui-menubutton" data-options="menu:'#mm5',iconCls:'icon-help'">帮助</a>
+            <a href="#" id="mb5" class="easyui-menubutton" data-options="menu:'#mm5',iconCls:'icon-delete'">轨迹查询</a>
+            <a href="#" id="mb10" class="easyui-menubutton" data-options="menu:'#mm10',iconCls:'icon-help'">帮助</a>
+            <a href="#" target="#" th:href="@{/roadnetwork_template}" class="easyui-linkbutton" data-options="iconCls:'icon-download'">路网数据模板文件下载</a>
         </div>
-        <div  onclick="javascript:myAddTabs('new', 'aaaa')" id="mm1" style="">
+        <div data-options="onClick:myAddTabs" id="mm1" style="">
             <div data-options="iconCls:'icon-undo'">新建</div>
         </div>
-        <div id="mm2" style="padding:10px;text-align:left">
-            <div th:each="g:${graphs}" th:text="${g.name}" onclick="openNetworkGraph(this)"></div>
-        </div>
-        <div id="mm3" style="padding:10px;text-align:left">
+        <div id="mm2" data-options="onClick:viewNetworkGraph" style="padding:10px;text-align:left">
             <div th:each="g:${graphs}" th:text="${g.name}"></div>
         </div>
-        <div id="mm4" style="padding:10px;text-align:left">
+        <div id="mm3" data-options="onClick:openNetworkGraphForEdit" style="padding:10px;text-align:left">
             <div th:each="g:${graphs}" th:text="${g.name}"></div>
         </div>
-        <div id="mm5" class="menu-content" style="padding:10px;text-align:left">
+        <div id="mm4" data-options="onClick:removeNetworkGraph" style="padding:10px;text-align:left">
+            <div th:each="g:${graphs}" th:text="${g.name}"></div>
+        </div>
+        <div id="mm5" data-options="onClick:queryNetworkGraph" style="padding:10px;text-align:left">
+            <div th:each="g:${graphs}" th:text="${g.name}"></div>
+        </div>
+        <div id="mm10" class="menu-content" style="padding:10px;text-align:left">
         </div>
     </div>
-	<div data-options="region:'south',border:true" style="height:50px;padding:10px;"></div>
-	<div id="mytabsid" data-options="region:'center',border:false,title:''" class="easyui-tabs" style=";">    	
-		<div title="华南师范大学路网图" data-options="closable:true" >
-		</div>
+	<div data-options="region:'south',border:true" style="text-align:center;height:20px;padding:0px;border:0px">
+		Copyright 2009-2015. All Rights Reserved. SCHOLAT 学者网 版权所有 粤ICP备10221259号 
+	</div>
+	<div id="mytabsid" data-options="region:'center',border:true,title:''" class="easyui-tabs" style="height:auto">  
+	
     </div>
     
-	<div id="newNetworkGraphWindow" class="easyui-window" title="创建路网图" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;height:290px;padding:10px;">
-        <div style="width:100%;height:160px;text-align:center;margin:10px">
-    		<form id="networkgraphform" action="/rngraph/new/" method="post">
+	<div id="newNetworkGraphWindow" class="easyui-window" title="创建路网图" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;height:340px;padding:10px;">
+        <div style="width:100%;height:220px;text-align:center;margin:10px">
+    		<form id="networkgraphform" action="/rngraph/new/" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="id" value=""></input>
-                <div style="">
-                    <div style="width:100%;height:32px">网络图名称：<input id="networkgraphform_name" name="name" class="easyui-textbox" style="width:70%;height:32px"></input>
-                    </div>
-                    
+                
+                 <div style="width:100%;height:42px">
+                   	&nbsp;&nbsp; 路网图名称：<input id="networkgraphform_name" name="name" class="easyui-textbox" style="width:70%;height:32px"></input>
                 </div>
-                <div style="">
-                    <div style="width:100%;height:32px">网络图描述：<input class="easyui-textbox" name="desc"  data-options="multiline:true" style="width:70%;height:100px"></input></div>
+               
+                <div style="width:100%;height:110px">
+                   	&nbsp;&nbsp; 路网图描述：<input class="easyui-textbox" name="desc"  data-options="multiline:true" style="width:70%;height:100px"></input>
                 </div>
+                
+                <div style="width:100%;height:32px">
+               		路网数据文件：<input class="easyui-filebox" name="roadnetworkfile" buttonText="选择路网文件" style="width:70%;"></input> 
+               	</div>
+               	<!-- 
+                <div style="width:100%;height:32px">
+               		&nbsp;&nbsp; 轨迹文件：<input class="easyui-filebox" name="trajectoryfile" buttonText="选择轨迹文件" style="width:70%;"></input>
+                </div>
+                 -->
             </form>
         </div>
 
@@ -154,6 +438,29 @@
             <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#newNetworkGraphWindow').window('close')">取消</a>
         </div>
     </div>
+	<div id="newNetworkRoadWindow" class="easyui-window" title="修改路网图基础信息" data-options="modal:true,closed:true,iconCls:'icon-save'" style="width:500px;height:290px;padding:10px;">
+        <div style="width:100%;height:160px;text-align:center;margin:10px">
+    		<form id="networkroadform" action="/rngraph/new/" method="post">
+                <input id="networkroadform_id" type="hidden" name="networkroadform_id" value=""></input>
+                <div style="">
+                    <div style="width:100%;height:32px">路网名称：<input id="networkroadform_name" name="networkroadform_name" class="easyui-textbox" style="width:70%;height:32px"></input>
+                    </div>
+                    
+                </div>
+                <div style="">
+                    <div style="width:100%;height:32px">路网描述：<input id="networkroadform_desc" class="easyui-textbox" name="networkroadform_desc"  data-options="" style="width:70%;height:100px"></input></div>
+                </div>
+            </form>
+        </div>
 
+        <div id="networkroadform-buttons" style="text-align:center;">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="javascript:updateNetworkGraphBasicInfo()">保存</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#newNetworkRoadWindow').window('close')">取消</a>
+        </div>
+    </div>
+    <div id="win2" class="easyui-window" title="轨迹查询结果图形显示" style='width:640px;height:480px;vertical-align: "middle";text-align: "center"'
+        data-options="iconCls:'icon-save',modal:true,closed:true,minimizable:false">
+        <div id="box" class="box" style='width:1024px; height:768px;text-align:center;'></div>				
+	</div>
 </body>
 </html>
